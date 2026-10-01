@@ -1,59 +1,89 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SafeHands Insurance Booking Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A booking platform for **SafeHands Insurance Brokers**, built as part of an internship project. Clients can browse insurance packages and schedule consultations through a responsive landing page and a REST API backend.
 
-## About Laravel
+**Intern:** Muhammad Mikail Khan
+**Client:** SafeHands Insurance Brokers
+**Stack:** HTML, CSS, JavaScript (frontend) · Laravel, PHP, MySQL (backend) · Laravel Sanctum (auth)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Status
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| # | Task | Status |
+|---|---|---|
+| 1 | Responsive landing page with booking form | ✅ Done |
+| 2 | Database schema and migrations | ✅ Done |
+| 3 | REST API for bookings and authentication | ✅ Done |
+| 4 | Admin dashboard to manage bookings | ⬜ Upcoming |
+| 5 | Deploy, document, and hand over | ⬜ Upcoming |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Task 1 — Landing Page
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+A responsive landing page showcasing SafeHands' services, with a booking form (name, email, phone, preferred date/time), client-side validation, and a `fetch()` submission to `/api/bookings`.
 
-## Laravel Sponsors
+- `index.html`, `css/style.css`, `js/script.js`
+- Semantic HTML, Flexbox/Grid layout, mobile-responsive
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Task 2 — Database Schema & Migrations
 
-### Premium Partners
+Laravel migrations for `users`, `packages`, and `bookings`, with Eloquent models and relationships, plus a seeder for sample insurance packages.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**Schema:**
 
-## Contributing
+- **users** — `id`, `name`, `email`, `phone`, `password`, timestamps
+- **packages** — `id`, `name`, `description`, `type`, `price`, `duration`, `is_active`, timestamps
+- **bookings** — `id`, `user_id` (FK → users), `package_id` (FK → packages), `name`, `email`, `phone`, `preferred_datetime`, `status`, `notes`, timestamps
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Relationships:** A `User` has many `Bookings`. A `Package` has many `Bookings`. A `Booking` belongs to a `User` and a `Package`.
 
-## Code of Conduct
+**Run:**
+```bash
+php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Task 3 — REST API & Authentication
 
-## Security Vulnerabilities
+Token-based authentication using **Laravel Sanctum**, plus booking endpoints scoped to the logged-in user.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Method | Endpoint | Auth required | Description |
+|---|---|---|---|
+| POST | `/api/auth/register` | No | Register a new user, returns token |
+| POST | `/api/auth/login` | No | Login, returns token |
+| POST | `/api/auth/logout` | Yes | Revoke current token |
+| GET | `/api/bookings` | Yes | List bookings for the logged-in user |
+| POST | `/api/bookings` | Yes | Create a new booking |
+| GET | `/api/bookings/{id}` | Yes | View a single booking |
 
-## License
+Protected routes require the header: `Authorization: Bearer <token>`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+All responses return JSON with appropriate HTTP status codes (`201` created, `200` success, `401` unauthorized, `404` not found, `422` validation error).
+
+---
+
+## Local Setup
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+# set DB_* values in .env, then:
+php artisan migrate --seed
+php artisan serve
+```
+
+API will be available at `http://127.0.0.1:8000/api`.
+
+## What I Did
+
+Built the full-stack foundation of the booking platform: a responsive landing page with a validated booking form, the database schema with migrations and relationships for users/packages/bookings, and a token-authenticated REST API covering registration, login, and booking creation/listing.
+
+## What Was Hard
+
+Getting the local environment set up correctly (PHP, Composer, and Sanctum configuration) took longer than expected, and making sure Sanctum's middleware and routes were wired up correctly so protected endpoints actually enforced authentication.
+
+## What I Left Out
+
+The admin dashboard, deployment, and full handover documentation are not part of this stage — those come in Tasks 4 and 5. The frontend landing page (Task 1) is not yet wired up to call the live API (Task 3); that integration is planned for a later step.
