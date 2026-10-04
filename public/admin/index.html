@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeHands Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- ===== Login Screen ===== -->
+  <section id="login-screen" class="screen">
+    <div class="login-box">
+      <h1>SafeHands Admin</h1>
+      <p class="subtitle">Sign in to manage bookings</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="admin@safehands.com">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <p id="login-error" class="error-text"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== Dashboard Screen ===== -->
+  <section id="dashboard-screen" class="screen hidden">
+    <header class="dashboard-header">
+      <h1>SafeHands Admin Dashboard</h1>
+      <button id="logout-btn" class="btn btn-secondary">Logout</button>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="toolbar">
+        <input type="text" id="search-input" placeholder="Search by client name..." aria-label="Search bookings by client name">
+        <span id="results-count" class="results-count"></span>
+      </div>
+
+      <div id="status-message" class="status-message"></div>
+
+      <div class="table-wrapper">
+        <table id="bookings-table">
+          <thead>
+            <tr>
+              <th>Client Name</th>
+              <th>Package</th>
+              <th>Date &amp; Time</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="bookings-tbody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+        <p id="empty-state" class="empty-state hidden">No bookings found.</p>
+      </div>
+    </main>
+  </section>
+
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminBookingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use Illuminate\Support\Facades\Route;
@@ -8,9 +9,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-| These routes are loaded by the RouteServiceProvider and all assigned
-| to the "api" middleware group. Sanctum's "auth:sanctum" middleware
-| protects routes that require a logged-in user.
 */
 
 // ---- Public auth routes ----
@@ -24,4 +22,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
     Route::get('/bookings/{id}', [BookingController::class, 'show']);
+
+    // ---- Admin-only routes (require auth:sanctum AND is_admin) ----
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/bookings', [AdminBookingController::class, 'index']);
+        Route::delete('/bookings/{id}', [AdminBookingController::class, 'destroy']);
+    });
 });

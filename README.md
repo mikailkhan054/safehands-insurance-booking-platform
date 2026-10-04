@@ -1,89 +1,110 @@
-# SafeHands Insurance Booking Platform
+# SafeHands Insurance Booking Platform — Task 4
 
-A booking platform for **SafeHands Insurance Brokers**, built as part of an internship project. Clients can browse insurance packages and schedule consultations through a responsive landing page and a REST API backend.
+A simple admin dashboard for managing bookings: lists all bookings, lets the admin search by client name (client-side), and delete bookings — all protected behind an `is_admin` role check.
 
-**Intern:** Muhammad Mikail Khan
-**Client:** SafeHands Insurance Brokers
-**Stack:** HTML, CSS, JavaScript (frontend) · Laravel, PHP, MySQL (backend) · Laravel Sanctum (auth)
+## Folder Structure
 
----
+```
+app/
+├── Http/
+│   ├── Controllers/Api/
+│   │   └── AdminBookingController.php
+│   └── Middleware/
+│       └── EnsureUserIsAdmin.php
+database/
+├── migrations/
+│   └── 2026_10_04_100000_add_is_admin_to_users_table.php
+└── seeders/
+    └── AdminUserSeeder.php
+public/
+└── admin/
+    ├── index.html
+    ├── css/admin.css
+    └── js/admin.js
+routes/
+└── api.php (updated with admin routes)
+```
 
-## Project Status
+## Setup
 
-| # | Task | Status |
+1. Copy `2026_10_04_100000_add_is_admin_to_users_table.php` into
+   `database/migrations/`
+
+2. Copy `AdminUserSeeder.php` into `database/seeders/`
+
+3. Copy `EnsureUserIsAdmin.php` into `app/Http/Middleware/`
+
+4. Copy `AdminBookingController.php` into `app/Http/Controllers/Api/`
+
+5. Replace `routes/api.php` with the provided file (adds the
+   `/api/admin/bookings` routes)
+
+6. **Register the `admin` middleware alias** — open
+   `bootstrap/app.php` and add it inside `->withMiddleware()`:
+
+   ```php
+   ->withMiddleware(function (Middleware $middleware) {
+       $middleware->alias([
+           'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+       ]);
+   })
+   ```
+
+7. Copy the `public/admin/` folder (index.html, css, js) into your
+   project's `public/admin/` folder.
+
+8. Run the migration and seed the admin user:
+   ```bash
+   php artisan migrate
+   php artisan db:seed --class=AdminUserSeeder
+   ```
+
+9. Start the server:
+   ```bash
+   php artisan serve
+   ```
+
+10. Open the dashboard in the browser:
+    ```
+    http://127.0.0.1:8000/admin/
+    ```
+
+## Admin Login (seeded test account)
+
+```
+Email:    admin@safehands.com
+Password: admin12345
+```
+
+## API Endpoints (Admin only)
+
+| Method | Endpoint | Description |
 |---|---|---|
-| 1 | Responsive landing page with booking form | ✅ Done |
-| 2 | Database schema and migrations | ✅ Done |
-| 3 | REST API for bookings and authentication | ✅ Done |
-| 4 | Admin dashboard to manage bookings | ⬜ Upcoming |
-| 5 | Deploy, document, and hand over | ⬜ Upcoming |
+| GET | `/api/admin/bookings` | List all bookings (any user). Optional `?search=name` query param also supported server-side. |
+| DELETE | `/api/admin/bookings/{id}` | Delete a booking by ID. |
 
----
-
-## Task 1 — Landing Page
-
-A responsive landing page showcasing SafeHands' services, with a booking form (name, email, phone, preferred date/time), client-side validation, and a `fetch()` submission to `/api/bookings`.
-
-- `index.html`, `css/style.css`, `js/script.js`
-- Semantic HTML, Flexbox/Grid layout, mobile-responsive
-
-## Task 2 — Database Schema & Migrations
-
-Laravel migrations for `users`, `packages`, and `bookings`, with Eloquent models and relationships, plus a seeder for sample insurance packages.
-
-**Schema:**
-
-- **users** — `id`, `name`, `email`, `phone`, `password`, timestamps
-- **packages** — `id`, `name`, `description`, `type`, `price`, `duration`, `is_active`, timestamps
-- **bookings** — `id`, `user_id` (FK → users), `package_id` (FK → packages), `name`, `email`, `phone`, `preferred_datetime`, `status`, `notes`, timestamps
-
-**Relationships:** A `User` has many `Bookings`. A `Package` has many `Bookings`. A `Booking` belongs to a `User` and a `Package`.
-
-**Run:**
-```bash
-php artisan migrate --seed
+Both require:
 ```
-
-## Task 3 — REST API & Authentication
-
-Token-based authentication using **Laravel Sanctum**, plus booking endpoints scoped to the logged-in user.
-
-| Method | Endpoint | Auth required | Description |
-|---|---|---|---|
-| POST | `/api/auth/register` | No | Register a new user, returns token |
-| POST | `/api/auth/login` | No | Login, returns token |
-| POST | `/api/auth/logout` | Yes | Revoke current token |
-| GET | `/api/bookings` | Yes | List bookings for the logged-in user |
-| POST | `/api/bookings` | Yes | Create a new booking |
-| GET | `/api/bookings/{id}` | Yes | View a single booking |
-
-Protected routes require the header: `Authorization: Bearer <token>`
-
-All responses return JSON with appropriate HTTP status codes (`201` created, `200` success, `401` unauthorized, `404` not found, `422` validation error).
-
----
-
-## Local Setup
-
-```bash
-composer install
-cp .env.example .env
-php artisan key:generate
-# set DB_* values in .env, then:
-php artisan migrate --seed
-php artisan serve
+Authorization: Bearer <token>
 ```
+...from a user whose `is_admin` is `true`. Non-admin users get a `403 Forbidden`.
 
-API will be available at `http://127.0.0.1:8000/api`.
+## How It Works
+
+- **Role check:** `EnsureUserIsAdmin` middleware runs after `auth:sanctum` on the `admin` route group. It checks `$request->user()->is_admin` and returns `403` if false.
+- **Dashboard login:** The admin logs in through the same `/api/auth/login` endpoint built in Task 3. The frontend checks `is_admin` in the response before showing the dashboard.
+- **Loading bookings:** On login, the dashboard calls `GET /api/admin/bookings` once and stores the full list in memory.
+- **Search:** Typing in the search box filters the in-memory list client-side (no extra API calls) by matching the client name.
+- **Delete:** Clicking "Delete" asks for confirmation, calls `DELETE /api/admin/bookings/{id}`, and removes the row from the table immediately on success.
 
 ## What I Did
 
-Built the full-stack foundation of the booking platform: a responsive landing page with a validated booking form, the database schema with migrations and relationships for users/packages/bookings, and a token-authenticated REST API covering registration, login, and booking creation/listing.
+Added an `is_admin` flag to the users table, built a middleware to gate admin-only routes, created endpoints to list all bookings and delete one, seeded a hardcoded admin test user, and built a plain-JavaScript dashboard with login, a searchable table, and delete functionality — all connected to the Task 3 API.
 
 ## What Was Hard
 
-Getting the local environment set up correctly (PHP, Composer, and Sanctum configuration) took longer than expected, and making sure Sanctum's middleware and routes were wired up correctly so protected endpoints actually enforced authentication.
+Making sure the `admin` middleware ran *after* `auth:sanctum` (so `$request->user()` is available) rather than before was easy to get wrong, and deciding whether search should hit the API or filter client-side — I went with client-side since the task specifically asked for that, while still keeping a server-side `search` param available as a bonus.
 
 ## What I Left Out
 
-The admin dashboard, deployment, and full handover documentation are not part of this stage — those come in Tasks 4 and 5. The frontend landing page (Task 1) is not yet wired up to call the live API (Task 3); that integration is planned for a later step.
+There's no pagination on the bookings list (fine for a small dataset, but would be needed at scale), and the admin role is only a boolean flag rather than a full roles/permissions system — out of scope for this task.
