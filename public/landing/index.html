@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeHands Insurance Brokers | Book a Consultation</title>
+  <meta name="description" content="SafeHands Insurance Brokers - schedule a free consultation with our insurance experts.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="logo">SafeHands<span>.</span></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#booking">Book Now</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-content">
+        <h1>Insurance Made Simple. Protection Made Personal.</h1>
+        <p>SafeHands Insurance Brokers helps you find the right coverage for your life, health, home, and business — with a real person guiding you every step of the way.</p>
+        <a href="#booking" class="btn btn-primary">Schedule a Free Consultation</a>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+      <div class="container">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+          <article class="service-card">
+            <h3>Life Insurance</h3>
+            <p>Secure your family's future with flexible life insurance plans tailored to your needs.</p>
+          </article>
+          <article class="service-card">
+            <h3>Health Insurance</h3>
+            <p>Comprehensive health coverage plans for individuals and families at affordable rates.</p>
+          </article>
+          <article class="service-card">
+            <h3>Home Insurance</h3>
+            <p>Protect your property and belongings against the unexpected with reliable home coverage.</p>
+          </article>
+          <article class="service-card">
+            <h3>Business Insurance</h3>
+            <p>Custom insurance solutions to keep your business protected and running smoothly.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="booking">
+      <div class="container">
+        <h2>Book Your Free Consultation</h2>
+        <p class="booking-sub">Fill out the form below and one of our advisors will get back to you shortly.</p>
+
+        <form id="booking-form" class="booking-form" novalidate>
+
+          <div class="form-group">
+            <label for="name">Full Name <span class="required">*</span></label>
+            <input type="text" id="name" name="name" placeholder="e.g. Ahmed Khan" autocomplete="name" required>
+            <span class="error-message" id="name-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="e.g. ahmed@example.com" autocomplete="email" required>
+            <span class="error-message" id="email-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number <span class="required">*</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="e.g. 03001234567" autocomplete="tel" required>
+            <span class="error-message" id="phone-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="datetime">Preferred Date &amp; Time <span class="required">*</span></label>
+            <input type="datetime-local" id="datetime" name="datetime" required>
+            <span class="error-message" id="datetime-error"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="submit-btn">Confirm Booking</button>
+
+          <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+      <div class="container">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+          <h3>Is the consultation free?</h3>
+          <p>Yes, the first consultation with our advisors is completely free of charge.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How long does a consultation take?</h3>
+          <p>Most consultations take between 20 to 30 minutes, depending on your needs.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 SafeHands Insurance Brokers. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
